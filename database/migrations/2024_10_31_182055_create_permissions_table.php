@@ -20,8 +20,8 @@ return new class extends Migration
                 ->cascadeOnDelete();
 
             $table->string('name')->nullable();
-            $table->string('slug')->unique();
-            $table->enum('type', ['View', 'Create', 'Update', 'Delete']);
+            $table->string('slug');
+            $table->enum('type', ['view', 'create', 'update', 'delete']);
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
