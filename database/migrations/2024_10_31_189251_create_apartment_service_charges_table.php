@@ -11,10 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('service_charges', function (Blueprint $table) {
+        Schema::create('apartment_service_charges', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->enum('frequency', ['Monthly', 'Quarterly', 'Half Yearly', 'Yearly', 'One Time']);
+
+            $table->foreignId('apartment_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->foreignId('service_charge_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
+            $table->unsignedInteger('amount');
 
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent()->useCurrentOnUpdate();
@@ -26,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('service_charges');
+        Schema::dropIfExists('apartment_service_charges');
     }
 };
