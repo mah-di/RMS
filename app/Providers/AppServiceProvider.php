@@ -11,7 +11,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(PermissionServiceProvider::class, function ($app) {
+            return new PermissionServiceProvider($app);
+        });
+
+        $this->app->singleton(UserRoleServiceProvider::class, function ($app) {
+            return new UserRoleServiceProvider($app);
+        });
     }
 
     /**
