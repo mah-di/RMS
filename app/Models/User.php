@@ -92,14 +92,14 @@ class User extends Authenticatable implements JWTSubject
         $permissionList = [];
 
         foreach ($permissions as $permission)
-            $permissionList[] = "{$permission->slug}:{$permission->type}";
+            $permissionList[] = "{$permission->type}-{$permission->slug}";
 
         return array_values(array_unique($permissionList));
     }
 
     public function hasPermissionTo($permission): bool
     {
-        [$type, $slug] = explode(':', $permission);
+        [$slug, $type] = explode('-', $permission);
 
         return $this->permissions()->where([
                 'permissions.slug' => $slug,

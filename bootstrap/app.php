@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             'auth.jwt' => \App\Http\Middleware\JWTAuthenticate::class,
+            'permission' => \App\Http\Middleware\CheckPermission::class,
         ]);
     })
     ->withBindings([

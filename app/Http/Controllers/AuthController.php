@@ -32,18 +32,17 @@ class AuthController extends Controller
                 message: 'Login successful.'
             );
 
-        } catch (ValidationException|CustomException $ce) {
-            return ResponseHelper::make(
-                status: 'error',
-                message: $ce->getMessage()
-            );
+        } catch (ValidationException|CustomException $e) {
+            $message = $e->getMessage();
 
         } catch (Exception $e) {
-            return ResponseHelper::make(
-                status: 'error',
-                message: 'Unexpected error occurred.'
-            );
+            $message = 'Unexpected error occurred.';
         }
+
+        return ResponseHelper::make(
+            status: 'error',
+            message: $message
+        );
     }
 
     public function me(): JsonResponse

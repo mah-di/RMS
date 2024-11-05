@@ -34,8 +34,7 @@ class JWTAuthenticate
         } catch (Exception $e) {
             return ResponseHelper::make(
                 status: 'error',
-                message: $e->getMessage(),
-                // message: 'Unauthenticated.',
+                message: 'Unauthenticated.',
                 code: 401
             );
         }
