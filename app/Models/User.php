@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -78,11 +79,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->roles()->pluck('slug')->toArray();
     }
 
-    public function permissions(): BelongsToMany
+    public function permissions(): HasManyThrough
     {
-        return $this->roles()
-            ->join('permissions', 'roles.id', '=', 'permissions.role_id')
-            ->select(['permissions.name', 'permissions.slug', 'permissions.type'])->distinct();
+        return $this->hasManyThrough(Permission::class, UserRole::class, 'user_id', 'role_id', 'id', 'role_id')
+                    ->select(['permissions.name', 'permissions.slug', 'permissions.type'])
+                    ->distinct();
     }
 
     public function getPermissionsAsArray(): array
@@ -94,7 +95,7 @@ class User extends Authenticatable implements JWTSubject
         foreach ($permissions as $permission)
             $permissionList[] = "{$permission->type}-{$permission->slug}";
 
-        return array_values(array_unique($permissionList));
+        return $permissionList;
     }
 
     public function hasPermissionTo($permission): bool
