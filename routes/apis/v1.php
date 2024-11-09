@@ -8,7 +8,7 @@ Route::middleware('auth.jwt')->group(function () {
 
     Route::prefix('auth')->group(function () {
         Route::post('/login', [AuthController::class, 'login'])->withoutMiddleware('auth.jwt');
-        Route::post('/refresh', [AuthController::class, 'getRefreshToken']);
+        Route::post('/refresh', [AuthController::class, 'getRefreshToken'])->withoutMiddleware('auth.jwt');
         Route::post('/me', [AuthController::class, 'me']);
         Route::post('/logout', [AuthController::class, 'logout']);
     });
