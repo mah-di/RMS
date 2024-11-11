@@ -5,17 +5,27 @@ namespace App\Http\Middleware;
 use App\Facades\Permission;
 use App\Facades\UserRole;
 use App\Helper\ResponseHelper;
+use App\Traits\HasClaims;
 use Closure;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\JWTException;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use PHPOpenSourceSaver\JWTAuth\Http\Middleware\BaseMiddleware;
+use PHPOpenSourceSaver\JWTAuth\JWTAuth;
 
 class JWTAuthenticate extends BaseMiddleware
 {
+    use HasClaims;
+
+    public function __construct(JWTAuth $auth)
+    {
+        parent::__construct($auth);
+
+        $this->setClaims();
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -30,17 +40,22 @@ class JWTAuthenticate extends BaseMiddleware
 
             $response = $next($request);
 
+            if (array_key_exists('non_refreshable', $this->claims) && $this->claims['non_refreshable'])
+                return $response;
+
             return $this->setAuthenticationHeader($response);
 
         } catch (JWTException $e) {
+            $status = 'jwt-error';
             $message = $e->getMessage();
 
         } catch (Exception $e) {
-            $message = 'Unauthenticated.';
+            $status = 'unauthenticated';
+            $message = 'Unauthenticated Request.';
         }
 
         return ResponseHelper::make(
-            status: 'error',
+            status: $status,
             message: $message,
             code: 401
         );
@@ -48,10 +63,7 @@ class JWTAuthenticate extends BaseMiddleware
 
     public function setContext()
     {
-        $token = JWTAuth::getToken();
-        $claims = JWTAuth::getPayload($token)->toArray();
-
-        Permission::setPermissions($claims['permissions']);
-        UserRole::setRoles($claims['roles']);
+        Permission::setPermissions($this->claims['permissions']);
+        UserRole::setRoles($this->claims['roles']);
     }
 }

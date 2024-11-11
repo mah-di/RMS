@@ -16,6 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'auth.jwt' => \App\Http\Middleware\JWTAuthenticate::class,
             'permission' => \App\Http\Middleware\CheckPermission::class,
+            'scope' => \App\Http\Middleware\CheckAccessScope::class,
+            'refreshable' => \App\Http\Middleware\EnsureTokenIsRefreshable::class,
         ]);
     })
     ->withBindings([
