@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'permission' => \App\Http\Middleware\CheckPermission::class,
             'scope' => \App\Http\Middleware\CheckAccessScope::class,
             'refreshable' => \App\Http\Middleware\EnsureTokenIsRefreshable::class,
+            'guest' => \App\Http\Middleware\RestrictAuthUser::class,
         ]);
     })
     ->withBindings([
