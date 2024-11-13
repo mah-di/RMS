@@ -6,12 +6,14 @@ use App\Exceptions\CustomException;
 use App\Facades\Permission;
 use App\Facades\UserRole;
 use App\Helper\ResponseHelper;
+use App\Mail\OTPMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use PHPOpenSourceSaver\JWTAuth\Exceptions\TokenExpiredException;
 
@@ -143,6 +145,11 @@ class AuthController extends Controller
 
             $user->update(['otp' => $otp]);
 
+            $type = $request->routeIs('send.otp') ? 'pass-reset' : 'verification';
+            $mail = new OTPMail($type, $otp);
+
+            Mail::to($user->email)->send($mail);
+
             return ResponseHelper::make(
                 status: 'success',
                 message: '6 digit OTP has been sent sent to your email. Expires in 5 minutes.'
@@ -153,6 +160,7 @@ class AuthController extends Controller
 
         } catch (Exception $e) {
             $message = 'Unexpected error occurred.';
+            $message = $e->getMessage();
         }
 
         return ResponseHelper::make(
@@ -166,7 +174,7 @@ class AuthController extends Controller
         try {
             $request->validate(['otp' => 'required|numeric|digits:6']);
 
-            if (Auth::user()->updated_at->addMinutes(5) < now()) {
+            if (Auth::user()->updated_at->addMinutes(5)->addSeconds(10) < now()) {
                 Auth::user()->update(['otp' => null]);
 
                 throw new CustomException('OTP has been expired.');
@@ -210,7 +218,7 @@ class AuthController extends Controller
             if (! $user = User::where('email', $request->email)->first())
                 throw new CustomException('User not found.');
 
-            if ($user->updated_at->addMinutes(5) < now()) {
+            if ($user->updated_at->addMinutes(5)->addSeconds(10) < now()) {
                 $user->update(['otp' => null]);
 
                 throw new CustomException('OTP has been expired.');

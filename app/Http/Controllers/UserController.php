@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\CustomException;
 use App\Helper\ResponseHelper;
+use App\Mail\OTPMail;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -44,6 +46,9 @@ class UserController extends Controller
             $validatedData['otp'] = $otp;
 
             $user = User::create($validatedData);
+
+            $mail = new OTPMail('verification', $otp);
+            Mail::to($user->email)->send($mail);
 
             return ResponseHelper::make(
                 status: 'success',
