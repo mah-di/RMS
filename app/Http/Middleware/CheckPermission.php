@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Exceptions\CustomException;
 use App\Facades\Permission;
 use App\Helper\ResponseHelper;
+use App\Facades\UserRole;
 use Closure;
 use Exception;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class CheckPermission
     public function handle(Request $request, Closure $next, string $permission): Response
     {
         try {
-            if (! in_array($permission, Permission::getPermissions()))
+            if (! UserRole::hasRole('owner') && ! Permission::hasPermissionTo($permission))
                 throw new CustomException('You don\'t have permission to access this resource.');
 
             return $next($request);

@@ -7,6 +7,7 @@ use App\Helper\ResponseHelper;
 use App\Mail\OTPMail;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -74,7 +75,7 @@ class UserController extends Controller
         try {
             return ResponseHelper::make(
                 status: 'success',
-                data: $user
+                data: $user->load('roles')
             );
 
         } catch (Exception $e) {
@@ -85,7 +86,7 @@ class UserController extends Controller
         }
     }
 
-    public function update(Request $request, User $user): JsonResponse
+    public function update(Request $request): JsonResponse
     {
         try {
             $validatedData = $request->validate([
@@ -93,11 +94,11 @@ class UserController extends Controller
                 'last_name' => 'required',
             ]);
 
-            $user->update($validatedData);
+            Auth::user()->update($validatedData);
 
             return ResponseHelper::make(
                 status: 'success',
-                data: $user,
+                data: Auth::user(),
                 message: 'User updated successfully!'
             );
 

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserRoleController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
@@ -24,7 +26,7 @@ Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
         Route::get('/', [UserController::class, 'index'])->middleware('permission:view-user');
         Route::get('/{user}', [UserController::class, 'show'])->middleware('permission:view-user');
         Route::post('/', [UserController::class, 'store'])->middleware('permission:create-user');
-        Route::put('/{user}', [UserController::class, 'update'])->middleware('permission:update-user');
+        Route::put('/', [UserController::class, 'update']);
         Route::delete('/{user}', [UserController::class, 'destroy'])->middleware('permission:delete-user');
     });
 
@@ -36,4 +38,16 @@ Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
         Route::delete('/{role}', [RoleController::class, 'destroy'])->middleware('permission:delete-role');
     });
 
+    Route::prefix('user-role')->group(function () {
+        Route::get('/attach/{user}/{role}', [UserRoleController::class, 'attach'])->middleware('permission:create-user-role');
+        Route::get('/detach/{user}/{role}', [UserRoleController::class, 'detach'])->middleware('permission:delete-user-role');
+    });
+
+    Route::prefix('permission')->group(function () {
+        Route::get('/', [PermissionController::class, 'index'])->middleware('permission:view-permission')->middleware('permission:view-permission');
+        Route::get('/{permission}', [PermissionController::class, 'show'])->middleware('permission:view-permission')->middleware('permission:view-permission');
+        Route::post('/', [PermissionController::class, 'store'])->middleware('permission:create-permission')->middleware('permission:create-permission');
+        Route::put('/{permission}', [PermissionController::class, 'update'])->middleware('permission:update-permission')->middleware('permission:update-permission');
+        Route::delete('/{permission}', [PermissionController::class, 'destroy'])->middleware('permission:delete-permission')->middleware('permission:delete-permission');
+    });
 });
