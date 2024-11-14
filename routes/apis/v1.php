@@ -46,8 +46,6 @@ Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
     Route::prefix('permission')->group(function () {
         Route::get('/', [PermissionController::class, 'index'])->middleware('permission:view-permission')->middleware('permission:view-permission');
         Route::get('/{permission}', [PermissionController::class, 'show'])->middleware('permission:view-permission')->middleware('permission:view-permission');
-        Route::post('/', [PermissionController::class, 'store'])->middleware('permission:create-permission')->middleware('permission:create-permission');
         Route::put('/{permission}', [PermissionController::class, 'update'])->middleware('permission:update-permission')->middleware('permission:update-permission');
-        Route::delete('/{permission}', [PermissionController::class, 'destroy'])->middleware('permission:delete-permission')->middleware('permission:delete-permission');
     });
 });

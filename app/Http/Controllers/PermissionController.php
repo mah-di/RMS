@@ -16,7 +16,7 @@ class PermissionController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $permissions = Permission::with('role')->get();
+            $permissions = Permission::with('roles')->get();
 
             return ResponseHelper::make(
                 status: 'success',
@@ -32,35 +32,6 @@ class PermissionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        try {
-            $validatedData = $request->validate([
-                'name' => 'nullable',
-                'slug' => 'required',
-                'type' => 'required|in:view,create,update,delete',
-                'role_id' => 'required|exists:roles,id',
-            ]);
-
-            $permission = Permission::create($validatedData);
-
-            return ResponseHelper::make(
-                status: 'success',
-                data: $permission,
-                message: 'Permission created successfully.'
-            );
-
-        } catch (Exception $e) {
-            return ResponseHelper::make(
-                status: 'error',
-                message: 'Unexpected error occurred.'
-            );
-        }
-    }
-
-    /**
      * Display the specified resource.
      */
     public function show(Permission $permission): JsonResponse
@@ -68,7 +39,7 @@ class PermissionController extends Controller
         try {
             return ResponseHelper::make(
                 status: 'success',
-                data: $permission->load('role')
+                data: $permission->load('roles')
             );
 
         } catch (Exception $e) {
@@ -85,12 +56,7 @@ class PermissionController extends Controller
     public function update(Request $request, Permission $permission)
     {
         try {
-            $validatedData = $request->validate([
-                'name' => 'nullable',
-                'slug' => "required",
-                'type' => 'required|in:view,create,update,delete',
-                'role_id' => 'required|exists:roles,id',
-            ]);
+            $validatedData = $request->validate(['name' => 'nullable']);
 
             $permission->update($validatedData);
 
@@ -98,27 +64,6 @@ class PermissionController extends Controller
                 status: 'success',
                 data: $permission,
                 message: 'Permission updated successfully.'
-            );
-
-        } catch (Exception $e) {
-            return ResponseHelper::make(
-                status: 'error',
-                message: 'Unexpected error occurred.'
-            );
-        }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Permission $permission)
-    {
-        try {
-            $permission->delete();
-
-            return ResponseHelper::make(
-                status: 'success',
-                message: 'Permission deleted successfully.'
             );
 
         } catch (Exception $e) {
