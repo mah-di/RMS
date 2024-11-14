@@ -81,16 +81,17 @@ class User extends Authenticatable implements JWTSubject
         return $this->roles()->pluck('slug')->toArray();
     }
 
-    public function permissions(): HasManyThrough
+    public function permissionsBuilder()
     {
-        return $this->hasManyThrough(Permission::class, UserRole::class, 'user_id', 'role_id', 'id', 'role_id')
-                    ->select(['permissions.name', 'permissions.slug', 'permissions.type'])
-                    ->distinct();
+        return $this->join('user_roles', 'user_roles.user_id', '=', 'users.id')
+                    ->join('role_permissions', 'role_permissions.role_id', '=', 'user_roles.role_id')
+                    ->join('permissions', 'role_permissions.permission_id', '=', 'permissions.id')
+                    ;
     }
 
     public function getPermissionsAsArray(): array
     {
-        $permissions = $this->permissions()->select(['permissions.slug', 'permissions.type'])->get();
+        $permissions = $this->permissionsBuilder()->select(['permissions.slug', 'permissions.type'])->distinct()->get();
 
         $permissionList = [];
 
@@ -104,7 +105,7 @@ class User extends Authenticatable implements JWTSubject
     {
         [$slug, $type] = explode('-', $permission);
 
-        return $this->permissions()->where([
+        return $this->permissionsBuilder()->where([
                 'permissions.slug' => $slug,
                 'permissions.type' => $type
             ])->count() > 0;
