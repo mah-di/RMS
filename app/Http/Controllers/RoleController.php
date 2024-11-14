@@ -17,7 +17,7 @@ class RoleController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $roles = Role::all();
+            $roles = Role::with('permissions')->get();
 
             return ResponseHelper::make(
                 status: 'success',
@@ -72,7 +72,7 @@ class RoleController extends Controller
         try {
             return ResponseHelper::make(
                 status: 'success',
-                data: $role,
+                data: $role->load('permissions'),
             );
 
         } catch (Exception $e) {

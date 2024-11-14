@@ -21,4 +21,10 @@ class Role extends Model
     {
         return $this->belongsToMany(Permission::class, 'role_permissions');
     }
+
+    public function getName(): string
+    {
+        return $this->name ?? $this->slug;
+    }
+
 }

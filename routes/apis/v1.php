@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -47,5 +48,12 @@ Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
         Route::get('/', [PermissionController::class, 'index'])->middleware('permission:view-permission')->middleware('permission:view-permission');
         Route::get('/{permission}', [PermissionController::class, 'show'])->middleware('permission:view-permission')->middleware('permission:view-permission');
         Route::put('/{permission}', [PermissionController::class, 'update'])->middleware('permission:update-permission')->middleware('permission:update-permission');
+    });
+
+    Route::prefix('role-permission')->group(function () {
+        Route::get('/attach/{role}/{permission}', [RolePermissionController::class, 'attach'])->middleware('permission:create-role-permission');
+        Route::get('/detach/{role}/{permission}', [RolePermissionController::class, 'detach'])->middleware('permission:delete-role-permission');
+        Route::get('/attach-bulk/{role}/{slug}', [RolePermissionController::class, 'bulkAttach'])->middleware('permission:create-role-permission');
+        Route::get('/detach-bulk/{role}/{slug}', [RolePermissionController::class, 'bulkDetach'])->middleware('permission:delete-role-permission');
     });
 });
