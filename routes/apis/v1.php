@@ -1,7 +1,10 @@
 <?php
 
+use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\OccupantController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ResidenceController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\UserController;
@@ -55,5 +58,29 @@ Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
         Route::get('/detach/{role}/{permission}', [RolePermissionController::class, 'detach'])->middleware('permission:delete-role-permission');
         Route::get('/attach-bulk/{role}/{slug}', [RolePermissionController::class, 'bulkAttach'])->middleware('permission:create-role-permission');
         Route::get('/detach-bulk/{role}/{slug}', [RolePermissionController::class, 'bulkDetach'])->middleware('permission:delete-role-permission');
+    });
+
+    Route::prefix('residence')->group(function () {
+        Route::get('/', [ResidenceController::class, 'index'])->middleware('permission:view-residence');
+        Route::get('/{residence}', [ResidenceController::class, 'show'])->middleware('permission:view-residence');
+        Route::post('/', [ResidenceController::class, 'store'])->middleware('permission:create-residence');
+        Route::put('/{residence}', [ResidenceController::class, 'update'])->middleware('permission:update-residence');
+        Route::delete('/{residence}', [ResidenceController::class, 'destroy'])->middleware('permission:delete-residence');
+    });
+
+    Route::prefix('apartment')->group(function () {
+        Route::get('/', [ApartmentController::class, 'index'])->middleware('permission:view-apartment');
+        Route::get('/{apartment}', [ApartmentController::class, 'show'])->middleware('permission:view-apartment');
+        Route::post('/', [ApartmentController::class, 'store'])->middleware('permission:create-apartment');
+        Route::put('/{apartment}', [ApartmentController::class, 'update'])->middleware('permission:update-apartment');
+        Route::delete('/{apartment}', [ApartmentController::class, 'destroy'])->middleware('permission:delete-apartment');
+    });
+
+    Route::prefix('occupant')->group(function () {
+        Route::get('/', [OccupantController::class, 'index'])->middleware('permission:view-occupant');
+        Route::get('/{occupant}', [OccupantController::class, 'show'])->middleware('permission:view-occupant');
+        Route::post('/', [OccupantController::class, 'store'])->middleware('permission:create-occupant');
+        Route::put('/{occupant}', [OccupantController::class, 'update'])->middleware('permission:update-occupant');
+        Route::delete('/{occupant}', [OccupantController::class, 'destroy'])->middleware('permission:delete-occupant');
     });
 });
