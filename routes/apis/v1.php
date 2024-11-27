@@ -3,6 +3,9 @@
 use App\Http\Controllers\ApartmentController;
 use App\Http\Controllers\ApartmentServiceChargeController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ExpenseSubTypeController;
+use App\Http\Controllers\ExpenseTypeController;
 use App\Http\Controllers\OccupantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ResidenceController;
@@ -108,5 +111,29 @@ Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
         Route::post('/', [RevenueController::class, 'store'])->middleware('permission:create-revenue');
         Route::put('/{revenue}', [RevenueController::class, 'update'])->middleware('permission:update-revenue');
         Route::delete('/{revenue}', [RevenueController::class, 'destroy'])->middleware('permission:delete-revenue');
+    });
+
+    Route::prefix('expense-type')->group(function () {
+        Route::get('/', [ExpenseTypeController::class, 'index'])->middleware('permission:view-expense-type');
+        Route::get('/{expenseType}', [ExpenseTypeController::class, 'show'])->middleware('permission:view-expense-type');
+        Route::post('/', [ExpenseTypeController::class, 'store'])->middleware('permission:create-expense-type');
+        Route::put('/{expenseType}', [ExpenseTypeController::class, 'update'])->middleware('permission:update-expense-type');
+        Route::delete('/{expenseType}', [ExpenseTypeController::class, 'destroy'])->middleware('permission:delete-expense-type');
+    });
+
+    Route::prefix('expense-sub-type')->group(function () {
+        Route::get('/', [ExpenseSubTypeController::class, 'index'])->middleware('permission:view-expense-sub-type');
+        Route::get('/{expenseSubType}', [ExpenseSubTypeController::class, 'show'])->middleware('permission:view-expense-sub-type');
+        Route::post('/', [ExpenseSubTypeController::class, 'store'])->middleware('permission:create-expense-sub-type');
+        Route::put('/{expenseSubType}', [ExpenseSubTypeController::class, 'update'])->middleware('permission:update-expense-sub-type');
+        Route::delete('/{expenseSubType}', [ExpenseSubTypeController::class, 'destroy'])->middleware('permission:delete-expense-sub-type');
+    });
+
+    Route::prefix('expense')->group(function () {
+        Route::get('/', [ExpenseController::class, 'index'])->middleware('permission:view-expense');
+        Route::get('/{expense}', [ExpenseController::class, 'show'])->middleware('permission:view-expense');
+        Route::post('/', [ExpenseController::class, 'store'])->middleware('permission:create-expense');
+        Route::put('/{expense}', [ExpenseController::class, 'update'])->middleware('permission:update-expense');
+        Route::delete('/{expense}', [ExpenseController::class, 'destroy'])->middleware('permission:delete-expense');
     });
 });

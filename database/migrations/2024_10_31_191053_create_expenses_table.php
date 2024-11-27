@@ -30,6 +30,12 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
+            $table->foreignId('occupant_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->restrictOnDelete();
+
             $table->foreignId('expense_type_id')
                 ->constrained()
                 ->cascadeOnUpdate()

@@ -11,6 +11,7 @@ class Expense extends Model
         'created_by',
         'residence_id',
         'apartment_id',
+        'occupant_id',
         'expense_type_id',
         'expense_sub_type_id',
         'amount',
@@ -33,6 +34,11 @@ class Expense extends Model
     public function apartment(): BelongsTo
     {
         return $this->belongsTo(Apartment::class);
+    }
+
+    public function occupant(): BelongsTo
+    {
+        return $this->belongsTo(Occupant::class);
     }
 
     public function expenseType(): BelongsTo
