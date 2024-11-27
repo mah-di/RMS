@@ -1,12 +1,15 @@
 <?php
 
 use App\Http\Controllers\ApartmentController;
+use App\Http\Controllers\ApartmentServiceChargeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OccupantController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ResidenceController;
+use App\Http\Controllers\RevenueController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RolePermissionController;
+use App\Http\Controllers\ServiceChargeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserRoleController;
 use Illuminate\Support\Facades\Route;
@@ -82,5 +85,28 @@ Route::middleware(['auth.jwt', 'scope:global'])->group(function () {
         Route::post('/', [OccupantController::class, 'store'])->middleware('permission:create-occupant');
         Route::put('/{occupant}', [OccupantController::class, 'update'])->middleware('permission:update-occupant');
         Route::delete('/{occupant}', [OccupantController::class, 'destroy'])->middleware('permission:delete-occupant');
+    });
+
+    Route::prefix('service-charge')->group(function () {
+        Route::get('/', [ServiceChargeController::class, 'index'])->middleware('permission:view-service-charge');
+        Route::get('/{serviceCharge}', [ServiceChargeController::class, 'show'])->middleware('permission:view-service-charge');
+        Route::post('/', [ServiceChargeController::class, 'store'])->middleware('permission:create-service-charge');
+        Route::put('/{serviceCharge}', [ServiceChargeController::class, 'update'])->middleware('permission:update-service-charge');
+        Route::delete('/{serviceCharge}', [ServiceChargeController::class, 'destroy'])->middleware('permission:delete-service-charge');
+    });
+
+    Route::prefix('apartment-service-charge')->group(function () {
+        Route::get('/', [ApartmentServiceChargeController::class, 'index'])->middleware('permission:view-apartment-service-charge');
+        Route::get('/{apartmentServiceCharge}', [ApartmentServiceChargeController::class, 'show'])->middleware('permission:view-apartment-service-charge');
+        Route::post('/', [ApartmentServiceChargeController::class, 'save'])->middleware('permission:create-service-charge');
+        Route::delete('/{apartmentServiceCharge}', [ApartmentServiceChargeController::class, 'destroy'])->middleware('permission:delete-apartment-service-charge');
+    });
+
+    Route::prefix('revenue')->group(function () {
+        Route::get('/', [RevenueController::class, 'index'])->middleware('permission:view-revenue');
+        Route::get('/{revenue}', [RevenueController::class, 'show'])->middleware('permission:view-revenue');
+        Route::post('/', [RevenueController::class, 'store'])->middleware('permission:create-revenue');
+        Route::put('/{revenue}', [RevenueController::class, 'update'])->middleware('permission:update-revenue');
+        Route::delete('/{revenue}', [RevenueController::class, 'destroy'])->middleware('permission:delete-revenue');
     });
 });

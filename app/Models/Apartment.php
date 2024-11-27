@@ -19,6 +19,10 @@ class Apartment extends Model
         'is_available',
     ];
 
+    protected $casts = [
+        'description' => 'array'
+    ];
+
     public function residence(): BelongsTo
     {
         return $this->belongsTo(Residence::class);

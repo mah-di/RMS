@@ -13,6 +13,10 @@ class Residence extends Model
         'description',
     ];
 
+    protected $casts = [
+        'description' => 'array',
+    ];
+
     public function apartments(): HasMany
     {
         return $this->hasMany(Apartment::class);

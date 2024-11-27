@@ -41,7 +41,7 @@ class ResidenceController extends Controller
             $validatedData = $request->validate([
                 'name' => 'nullable|max:255',
                 'location' => 'required|unique:residences,location',
-                'description' => 'nullable|json'
+                'description' => 'nullable|array'
             ]);
 
             $residence = Residence::create($validatedData);
@@ -64,7 +64,7 @@ class ResidenceController extends Controller
             message: $message
         );
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -75,7 +75,7 @@ class ResidenceController extends Controller
                 status: 'success',
                 data: $residence
             );
-            
+
         } catch (Exception $e) {
             return ResponseHelper::make(
                 status: 'error',

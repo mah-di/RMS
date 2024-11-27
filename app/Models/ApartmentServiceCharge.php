@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ApartmentServiceCharge extends Model
 {
@@ -11,4 +12,14 @@ class ApartmentServiceCharge extends Model
         'service_charge_id',
         'amount',
     ];
+
+    public function apartment(): BelongsTo
+    {
+        return $this->belongsTo(Apartment::class);
+    }
+
+    public function serviceCharge(): BelongsTo
+    {
+        return $this->belongsTo(ServiceCharge::class);
+    }
 }

@@ -20,7 +20,7 @@ class Revenue extends Model
         'amount',
     ];
 
-    public function created_by(): BelongsTo
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }

@@ -3,31 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Helper\ResponseHelper;
-use App\Models\Apartment;
+use App\Models\ServiceCharge;
 use Exception;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class ApartmentController extends Controller
+class ServiceChargeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index()
     {
         try {
-            $apartments = Apartment::all();
+            $serviceCharges = ServiceCharge::all();
 
             return ResponseHelper::make(
                 status: 'success',
-                data: $apartments
+                data: $serviceCharges
             );
 
         } catch (Exception $e) {
             return ResponseHelper::make(
                 status: 'error',
-                message: 'Unexpected error occured.'
+                message: 'Unexpected error occurred.'
             );
         }
     }
@@ -35,32 +34,27 @@ class ApartmentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): JsonResponse
+    public function store(Request $request)
     {
         try {
             $validatedData = $request->validate([
-                'residence_id' => 'required|exists:residences,id',
-                'apartment_number' => 'nullable',
-                'name' => 'required|unique:apartments,name',
-                'description' => 'nullable|array',
-                'is_owner_apartment' => 'required|boolean',
-                'rent_amount' => 'nullable|numeric|min:0',
-                'is_available' => 'required|boolean'
+                'name' => 'required|unique:service_charges,name',
+                'frequency' => 'required|in:Monthly,Quarterly,Half Yearly,Yearly,One Time'
             ]);
 
-            $apartment = Apartment::create($validatedData);
+            $serviceCharge = ServiceCharge::create($validatedData);
 
             return ResponseHelper::make(
                 status: 'success',
-                data: $apartment,
-                message: 'Apartment created successfully.'
+                data: $serviceCharge,
+                message: 'Service charge created successfully.'
             );
 
         } catch (ValidationException $e) {
             $message = $e->getMessage();
 
         } catch (Exception $e) {
-            $message = 'Unexpected error occured.';
+            $message = 'Unexpected error occurred.';
         }
 
         return ResponseHelper::make(
@@ -72,18 +66,18 @@ class ApartmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Apartment $apartment): JsonResponse
+    public function show(ServiceCharge $serviceCharge)
     {
         try {
             return ResponseHelper::make(
                 status: 'success',
-                data: $apartment
+                data: $serviceCharge
             );
 
         } catch (Exception $e) {
             return ResponseHelper::make(
                 status: 'error',
-                message: 'Unexpected error occured.'
+                message: 'Unexpected error occurred.'
             );
         }
     }
@@ -91,32 +85,27 @@ class ApartmentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Apartment $apartment)
+    public function update(Request $request, ServiceCharge $serviceCharge)
     {
         try {
             $validatedData = $request->validate([
-                'residence_id' => 'required|exists:residences,id',
-                'apartment_number' => 'nullable',
-                'name' => "required|unique:apartments,name,{$apartment->id}",
-                'description' => 'nullable|array',
-                'is_owner_apartment' => 'required|boolean',
-                'rent_amount' => 'nullable|numeric|min:0',
-                'is_available' => 'required|boolean'
+                'name' => "required|unique:service_charges,name,{$serviceCharge->id}",
+                'frequency' => 'required|in:Monthly,Quarterly,Half Yearly,Yearly,One Time'
             ]);
 
-            $apartment->update($validatedData);
+            $serviceCharge->update($validatedData);
 
             return ResponseHelper::make(
                 status: 'success',
-                data: $apartment,
-                message: 'Apartment updated successfully'
+                data: $serviceCharge,
+                message: 'Service charge updated successfully.'
             );
 
         } catch (ValidationException $e) {
             $message = $e->getMessage();
 
         } catch (Exception $e) {
-            $message = 'Unexpected error occured.';
+            $message = 'Unexpected error occurred.';
         }
 
         return ResponseHelper::make(
@@ -128,20 +117,19 @@ class ApartmentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Apartment $apartment)
+    public function destroy(ServiceCharge $serviceCharge)
     {
         try {
-            $apartment->delete();
+            $serviceCharge->delete();
 
             return ResponseHelper::make(
                 status: 'success',
-                message: 'Apartment deleted successfully'
+                message: 'Service charge deleted successfully.'
             );
-
         } catch (Exception $e) {
             return ResponseHelper::make(
                 status: 'error',
-                message: 'Unexpected error occurred.',
+                message: 'Unexpected error occurred.'
             );
         }
     }

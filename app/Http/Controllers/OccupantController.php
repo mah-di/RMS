@@ -39,12 +39,12 @@ class OccupantController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'residence_id' => 'required|exists:residences',
-                'apartment_id' => 'required|exists:apartments',
+                'residence_id' => 'required|exists:residences,id',
+                'apartment_id' => 'required|exists:apartments,id',
                 'name' => 'required',
                 'address' => 'nullable',
                 'occupation' => 'nullable',
-                'phone' => 'nullable|regex:/^\+?[0-9\s\-]{10,15}$/',
+                'phone' => 'nullable|regex:/^\+?[0-9\s\-]{11,17}$/',
                 'move_in_date' => 'nullable|date',
                 'move_out_date' => 'nullable|date',
                 'is_current_occupant' => 'required|boolean'
@@ -70,7 +70,7 @@ class OccupantController extends Controller
             message: $message
         );
     }
-    
+
     /**
      * Display the specified resource.
      */
@@ -81,7 +81,7 @@ class OccupantController extends Controller
                 status: 'success',
                 data: $occupant
             );
-            
+
         } catch (Exception $e) {
             return ResponseHelper::make(
                 status: 'error',
@@ -97,12 +97,12 @@ class OccupantController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'residence_id' => 'required|exists:residences',
-                'apartment_id' => 'required|exists:apartments',
+                'residence_id' => 'required|exists:residences,id',
+                'apartment_id' => 'required|exists:apartments,id',
                 'name' => 'required',
                 'address' => 'nullable',
                 'occupation' => 'nullable',
-                'phone' => 'nullable|regex:/^\+?[0-9\s\-]{10,15}$/',
+                'phone' => 'nullable|regex:/^\+?[0-9\s\-]{11,17}$/',
                 'move_in_date' => 'nullable|date',
                 'move_out_date' => 'nullable|date',
                 'is_current_occupant' => 'required|boolean'
